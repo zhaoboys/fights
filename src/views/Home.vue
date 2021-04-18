@@ -38,9 +38,9 @@ export default {
       console.log(res);
     },
     resetPwd() {
-      this.axios.post("user/newPwd").then((res) => {
-        console.log(res);
-      });
+      // this.axios.post("user/newPwd").then((res) => {
+      //   console.log(res);
+      // });
     },
     async register() {
       // this.axios.post('user/register').then(res=>{

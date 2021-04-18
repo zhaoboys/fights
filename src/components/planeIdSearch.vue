@@ -92,21 +92,16 @@ export default {
         if (!this.searchForm.pname || !this.searchForm.pStartTime) {
           return this.$message.error("航班号和出发日期不可为空");
         }
-        let time = this.$oneDayTime(
-          new Date(this.searchForm.pStartTime).getTime()
-        );
-        let res = await this.$request({
-          type: "get",
-          url: "/home/airSearch",
-          params: {
+        let time = new Date(this.searchForm.pStartTime).getTime();
+        console.log(this.searchForm.pname, 454566);
+        this.$router.push({
+          path: "/plabeState",
+          query: {
+            isLeft: 1,
             pname: this.searchForm.pname,
-            pStartTime: time[0],
-            pEndTime: time[1],
+            pStartTime: time,
           },
         });
-        if (res) {
-          console.log(res);
-        }
       } else {
         if (
           !this.searchForm.pStartCity ||
@@ -117,22 +112,34 @@ export default {
         }
         if (this.searchForm.pStartCity === this.searchForm.pEndCity)
           return this.$message.error("出发和到达城市不能重复");
-        let time = this.$oneDayTime(
-          new Date(this.searchForm.pStartTime).getTime()
-        );
-        let res = await this.$request({
-          type: "get",
-          url: "/home/airSearch",
-          params: {
+
+        console.log(this.searchForm.pname, 454566);
+        this.$router.push({
+          path: "/plabeState",
+          query: {
+            isLeft: 0,
             pStartCity: this.searchForm.pStartCity,
             pEndCity: this.searchForm.pEndCity,
-            pStartTime: time[0],
-            pEndTime: time[1],
+            pStartTime: new Date(this.searchForm.pStartTime).getTime(),
           },
         });
-        if (res) {
-          console.log(res);
-        }
+
+        // let time = this.$oneDayTime(
+        //   new Date(this.searchForm.pStartTime).getTime()
+        // );
+        // let res = await this.$request({
+        //   type: "get",
+        //   url: "/home/airSearch",
+        //   params: {
+        //     pStartCity: this.searchForm.pStartCity,
+        //     pEndCity: this.searchForm.pEndCity,
+        //     pStartTime: time[0],
+        //     pEndTime: time[1],
+        //   },
+        // });
+        // if (res) {
+        //   console.log(res);
+        // }
       }
     },
   },

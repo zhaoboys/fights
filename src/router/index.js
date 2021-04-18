@@ -5,6 +5,7 @@ import Login from "../views/login.vue";
 import Register from "../views/register";
 import PlaneSearch from "../views/planeSearch";
 import ResultShow from "../views/resultShow";
+import PlaneState from "../views/planeState.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -32,6 +33,11 @@ const routes = [
     path: "/resultShow",
     name: "ResultShow",
     component: ResultShow,
+  },
+  {
+    path: "/plabeState",
+    name: "PlaneState",
+    component: PlaneState,
   },
   // {
   //   path: "/about",

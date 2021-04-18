@@ -98,48 +98,19 @@ export default {
         if (valid) {
           if (this.searchForm.pStartCity === this.searchForm.pEndCity)
             return this.$message.error("出发和到达城市不能重复");
-          if (this.searchForm.pEndTime) {
-            let startTime = this.$oneDayTime(
-              new Date(this.searchForm.pStartTime).getTime()
-            )[0];
-            let endTime = this.$oneDayTime(
-              new Date(this.searchForm.pEndTime).getTime()
-            )[1];
-            let res = await this.$request({
-              type: "get",
-              url: "/home/airSearch",
-              params: {
-                pStartCity: this.searchForm.pStartCity,
-                pEndCity: this.searchForm.pEndCity,
-                pStartTime: startTime,
-                pEndTime: endTime,
-              },
-            });
-            if (res) {
-              console.log(res);
-            }
-          } else {
-            let startTime = this.$oneDayTime(
-              new Date(this.searchForm.pStartTime).getTime()
-            )[0];
-            let endTime = this.$oneDayTime(
-              new Date(this.searchForm.pStartTime).getTime()
-            )[1];
-            let res = await this.$request({
-              type: "get",
-              url: "/home/airSearch",
-              params: {
-                pStartCity: this.searchForm.pStartCity,
-                pEndCity: this.searchForm.pEndCity,
-                pStartTime: startTime,
-                pEndTime: endTime,
-              },
-            });
-            if (res) {
-              console.log(res);
-            }
-          }
-          console.log(this.searchForm.pStartTime);
+
+          this.$router.push({
+            path: "/resultShow",
+            query: {
+              pStartCity: this.searchForm.pStartCity,
+              pEndCity: this.searchForm.pEndCity,
+              pStartTime: new Date(this.searchForm.pStartTime).getTime(),
+              pEndTime: this.searchForm.pEndTime
+                ? new Date(this.searchForm.pEndTime).getTime()
+                : "",
+              isBack: this.searchForm.isBack,
+            },
+          });
         } else {
           console.log("error submit!!");
           return false;

@@ -72,66 +72,6 @@ router.get("/airSearch", (req, res) => {
   });
 });
 
-//根据起飞将落地和时间搜索航班
-router.get("/planeSearch", (req, res) => {
-  let parms = req.query;
-  // conn.query(`select * from fs_info where pStartCity='南京' and pEndCity='北京' and pStartTime between 1616947200000 and 1617033599000`,function(err,result){
-  conn.query(
-    `select * from fs_info where pStartCity=${parms.pStartCity} and pEndCity=${parms.pEndCity} and pStartTime between ${parms.time1} and ${parms.time2}`,
-    function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.send(result);
-      }
-    }
-  );
-});
-
-//根据起飞降落地、时间和航班公司查询航班
-router.get("/pcSearch", (req, res) => {
-  let parms = req.query;
-  // conn.query(`select * from fs_info where pStartCity='南京' and pEndCity='北京' and cid='DF' and pStartTime between 1616947200000 and 1617033599000`,function(err,result){
-  conn.query(
-    `select * from fs_info where pStartCity=${parms.pStartCity} and pEndCity=${parms.pEndCity} and cid=${parms.cid} and pStartTime between ${parms.time1} and ${parms.time2}`,
-    function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.send(result);
-      }
-    }
-  );
-});
-
-//根据起飞降落地、机场和时间搜索航班
-router.get("/pcpSearch", (req, res) => {
-  let parms = req.query;
-  // conn.query(`select * from fs_info where pStartCity='南京' and pEndCity='北京'and pStartArea='南京禄口机场' and pEndArea='北京大兴机场's and pStartTime between 1616947200000 and 1617033599000`,function(err,result){
-  conn.query(
-    `select * from fs_info where pStartCity=${parms.pStartCity} and pEndCity=${parms.pEndCity} and pStartArea=${parms.pStartArea} and pEndArea=${parms.pEndArea} and pStartTime between ${parms.time1} and ${parms.time2}`,
-    function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.send(result);
-      }
-    }
-  );
-});
-
-//根据起飞降落地、机场和时间和航班公司查询航班
-router.get("/pcpcSearch", (req, res) => {
-  let parms = req.query;
-  // conn.query(`select * from fs_info where pStartCity='南京' and pEndCity='北京'and pStartArea='南京禄口机场' and pEndArea='北京大兴机场' and cid='DF' and pStartTime between 1616947200000 and 1617033599000`,function(err,result){
-  conn.query(
-    `select * from fs_info where pStartCity=${parms.pStartCity} and pEndCity=${parms.pEndCity} and pStartArea=${parms.pStartArea} and pEndArea='北京大兴机场' and cid='DF' and pStartTime between 1616947200000 and 1617033599000`,
-    function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.send(result);
-      }
-    }
-  );
-});
-
 //只根据航空公司查询航班  首页
 router.get("/companySearch", (req, res) => {
   let parms = req.query;
@@ -148,7 +88,6 @@ router.get("/companySearch", (req, res) => {
 
 //获取航班公司信息表
 router.get("/getCompany", (req, res) => {
-  let parms = req.query;
   conn.query("select * from fs_company", function (err, result) {
     if (err) throw err;
     if (result) {
