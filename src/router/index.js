@@ -6,6 +6,8 @@ import Register from "../views/register";
 import PlaneSearch from "../views/planeSearch";
 import ResultShow from "../views/resultShow";
 import PlaneState from "../views/planeState.vue";
+import ManageBack from "../views/manageBack.vue";
+import ForgetPwd from "../views/forgetPwd.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -38,6 +40,16 @@ const routes = [
     path: "/plabeState",
     name: "PlaneState",
     component: PlaneState,
+  },
+  {
+    path: "/manageBack",
+    name: "ManageBack",
+    component: ManageBack,
+  },
+  {
+    path: "/forgePwd",
+    name: "ForgetPwd",
+    component: ForgetPwd,
   },
   // {
   //   path: "/about",

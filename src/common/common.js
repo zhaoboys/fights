@@ -74,6 +74,15 @@ Vue.prototype.$request = async function ({
   return a;
 };
 
+Vue.prototype.$stateSet = function (time1, time2) {
+  if (time2 < new Date().getTime()) {
+    return "到达";
+  } else if (time1 > new Date().getTime()) {
+    return "计划";
+  } else if (time1 < new Date().getTime() && time2 > new Date().getTime()) {
+    return "起飞";
+  }
+};
 // Vue.prototype.$moreDayTime=function(time1,time2){
 //     let realTime1=new Date(time1)
 //     let realTime2=new Date(time2)

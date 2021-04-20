@@ -7,26 +7,39 @@
     <router-view />
   </div>
 </template>
-
+<script>
+export default {
+  created() {
+    // if (!this.$store.state.uid) {
+    //   this.$message.error("请登录");
+    //   this.$router.push("/login");
+    // }
+  },
+  mounted() {
+    this.getHeight();
+  },
+  methods: {
+    getHeight() {
+      document.getElementById("app").style.height =
+        (window.innerHeight ||
+          document.documentElement.clientHeight ||
+          document.body.clientHeight) + "px";
+      console.log(document.getElementById("app").style.height);
+    },
+  },
+};
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  margin: 0;
   text-align: center;
   color: #2c3e50;
+  /* background: #aaa; */
 }
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+html {
+  /* -ms-overflow-style: none; */
+  overflow: auto;
 }
 </style>

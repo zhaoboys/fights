@@ -3,6 +3,7 @@
     <div>
       <span>欢迎来到航班查询系统</span>
     </div>
+    <div><UserShow></UserShow></div>
     <div class="searchBox">
       <el-collapse-transition>
         <el-tabs v-show="show" v-model="activeName">
@@ -20,10 +21,12 @@
 <script>
 import PlaneSearchTable from "./../components/planeSearchTable";
 import PlaneIdSearch from "./../components/planeIdSearch";
+import UserShow from "./../components/userShow";
 export default {
   components: {
     PlaneSearchTable,
     PlaneIdSearch,
+    UserShow,
   },
   data() {
     return {
@@ -35,6 +38,7 @@ export default {
   created() {
     this.show = true;
     this.getCity();
+    console.log(this.$store.state.uid, 123);
   },
   methods: {
     async getCity() {
