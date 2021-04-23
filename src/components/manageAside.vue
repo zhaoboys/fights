@@ -16,10 +16,10 @@
         <i class="el-icon-document"></i>
         <span slot="title">用户管理</span>
       </el-menu-item>
-      <!-- <el-menu-item index="4">
+      <el-menu-item index="3">
         <i class="el-icon-setting"></i>
-        <span slot="title">导航四</span>
-      </el-menu-item> -->
+        <span slot="title">城市管理</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -43,6 +43,6 @@ export default {
 }
 #asideBox .el-menu {
   height: 100%;
-  width: 180px;
+  width: 179px;
 }
 </style>

@@ -28,6 +28,7 @@ this;
 </script>
 <style scoped>
 #main {
+  text-align: right;
 }
 #main span:last-child {
   color: dodgerblue;

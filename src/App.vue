@@ -34,7 +34,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   padding: 0;
   margin: 0;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
   /* background: #aaa; */
 }

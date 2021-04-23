@@ -114,11 +114,19 @@ export default {
               uid: this.pwdForm.uid,
               upwd: this.pwdForm.upwd,
               uquestion: this.pwdForm.uquestion,
-              uanswer: this.pwdForm.uquestion,
+              uanswer: this.pwdForm.uanswer,
             },
           });
-          if (res) {
-            console.log(res);
+          if (res.data) {
+            console.log(res.data);
+            if (res.data.affectedRows > 0) {
+              this.$message.success("修改成功");
+              setTimeout(() => {
+                this.$router.push("/login");
+              }, 1000);
+            } else {
+              this.$message.error("修改失败");
+            }
           }
         }
       });

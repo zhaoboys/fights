@@ -8,6 +8,52 @@ let mysql = require("mysql");
 var conn = mysql.createConnection(models.mysql);
 conn.connect();
 
+// 查询用户
+router.get("/getUser", (req, res) => {
+  let params = req.query;
+  let sql = "";
+  let string = "";
+  if (JSON.stringify(params) == `{}`) {
+    sql = `select * from fs_user`;
+  } else {
+    for (let key in params) {
+      if (params[key] == "") {
+        continue;
+      }
+      string += `${key}='${params[key]}' and`;
+    }
+    string = string.slice(0, -4);
+    sql = `select * from fs_user where ${string}`;
+  }
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
+//修改用户权限
+router.post("/changeUserInfo", (req, res) => {
+  let params = req.body;
+  let string = "";
+  for (let key in params) {
+    if (key === "uid") {
+      continue;
+    }
+    string += `${key}='${params[key]}' ,`;
+  }
+  string = string.slice(0, -1);
+  let sql = `update  fs_user set ${string} WHERE uid ='${[params.uid]}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
 //用户登录
 router.get("/login", (req, res) => {
   let params = req.query;
@@ -73,6 +119,36 @@ router.post("/deleteUser", (req, res) => {
   });
 });
 
+// root修改城市机场
+router.post("/changeCityPlane", (req, res) => {
+  var params = req.body;
+  let string = "";
+  for (let key in req.body) {
+    if (key !== "id") {
+      string += `${key}='${req.body[key]}', `;
+    }
+  }
+  string = string.slice(0, -2);
+  let sql = `update fs_planeArea set ${string} where id=${params.id}`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+//root删除城市航班
+router.post("/deleteCityPlane", (req, res) => {
+  var params = req.body;
+  let sql = `DELETE FROM fs_planeArea WHERE id='${params.id}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
 //root 修改航班信息
 router.post("/planeChange", (req, res) => {
   let params = req.body;
@@ -83,9 +159,7 @@ router.post("/planeChange", (req, res) => {
     }
   }
   string = string.slice(0, -2);
-  console.log(string, "航班信息");
   let sql = `update fs_info set ${string} where pid=${params.pid}`;
-  // let sql=`update fs_info set pmodel='ass5+46' where pid=1`
   conn.query(sql, function (err, result) {
     if (err) throw err;
     if (result) {
@@ -94,4 +168,15 @@ router.post("/planeChange", (req, res) => {
   });
 });
 
+//删除航班信息
+router.post("/deletePlane", (req, res) => {
+  let params = req.body;
+  let sql = `DELETE FROM fs_info WHERE pid='${params.pid}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
 module.exports = router;
