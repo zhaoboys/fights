@@ -8,6 +8,7 @@ import ResultShow from "../views/resultShow";
 import PlaneState from "../views/planeState.vue";
 import ManageBack from "../views/manageBack.vue";
 import ForgetPwd from "../views/forgetPwd.vue";
+import PersonCenter from "./../views/personCenter.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -50,6 +51,11 @@ const routes = [
     path: "/forgePwd",
     name: "ForgetPwd",
     component: ForgetPwd,
+  },
+  {
+    path: "/personCenter",
+    name: "PersonCenter",
+    component: PersonCenter,
   },
   // {
   //   path: "/about",

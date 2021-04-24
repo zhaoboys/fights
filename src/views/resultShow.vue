@@ -1,5 +1,10 @@
 <template>
   <div id="mian">
+    <div><UserShow></UserShow></div>
+    <div class="titleBox">
+      <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
+      <span>欢迎来到航班查询系统</span>
+    </div>
     <!-- 顶部搜索框开始 -->
     <div class="searchTop">
       <el-form ref="resForm" :model="resForm" :inline="true">
@@ -79,16 +84,20 @@
     </div>
     <!-- 顶部搜索框结束 -->
     <!-- 中间展示开始 -->
-    <div>
+    <div class="centerDiv">
       <el-table
         :data="planetableData"
         style="width: 100%"
         v-loading="tableLoading"
         :default-sort="{ prop: 'date', order: 'descending' }"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column prop="pname" sortable label="航班信息" width="180">
           <template slot-scope="scope">
-            <div>{{ scope.row.cid }}</div>
+            <div>
+              {{ companyData.find((item) => item.cid === scope.row.cid).cname }}
+            </div>
             <div>{{ scope.row.pname }}</div>
           </template>
         </el-table-column>
@@ -131,13 +140,29 @@
             <div>{{ scope.row.pEndArea }}</div>
           </template>
         </el-table-column>
+        <el-table-column label="关注" width="90px">
+          <template slot-scope="scope">
+            <el-button size="small" @click="changeCare($event, scope.row)">
+              {{
+                userCareData.find((item) => item.pid === scope.row.pid) ===
+                undefined
+                  ? "关注"
+                  : "取消关注"
+              }}
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <!-- 中间展示结束 -->
   </div>
 </template>
 <script>
+import UserShow from "./../components/userShow";
 export default {
+  components: {
+    UserShow,
+  },
   data() {
     return {
       pickerOptions: {
@@ -160,6 +185,8 @@ export default {
       ],
       cityArr: [],
       tableLoading: false,
+      companyData: [],
+      userCareData: [],
     };
   },
   async created() {
@@ -177,9 +204,39 @@ export default {
     let arr = [];
     arr.push(this.planeSearch());
     arr.push(this.getCity());
+    arr.push(this.getCopany());
+    arr.push(this.getUserCare());
     await Promise.all(arr);
   },
   methods: {
+    async changeCare(e, row) {
+      if (e.target.innerHTML === "<!----><!----><span> 关注 </span>") {
+        let res = await this.$request({
+          type: "post",
+          url: "/user/addCare",
+          params: {
+            uid: window.sessionStorage.getItem("uid"),
+            pid: row.pid,
+          },
+        });
+        if (res) {
+          this.getUserCare();
+        }
+      }
+      if (e.target.innerHTML === "<!----><!----><span> 取消关注 </span>") {
+        let res = await this.$request({
+          type: "post",
+          url: "/user/deleteCare",
+          params: {
+            uid: window.sessionStorage.getItem("uid"),
+            pid: row.pid,
+          },
+        });
+        if (res) {
+          this.getUserCare();
+        }
+      }
+    },
     // 初始接受值搜索航班信息
     async planeSearch() {
       // 展示加载动画
@@ -236,6 +293,30 @@ export default {
       this.resForm.pStartCity = this.resForm.pEndCity;
       this.resForm.pEndCity = a;
     },
+    //获取航空公司
+    async getCopany() {
+      let res = await this.$request({
+        type: "get",
+        url: "/home/getCompany",
+      });
+      if (res) {
+        this.companyData = res.data;
+      }
+    },
+    //获取用户关注航班
+    async getUserCare() {
+      let res = await this.$request({
+        type: "get",
+        url: "/user/planeCare",
+        params: {
+          uid: window.sessionStorage.getItem("uid"),
+        },
+      });
+      if (res) {
+        console.log(res, 123456489);
+        this.userCareData = res.data;
+      }
+    },
     // 航班搜索
     async searchTo() {
       console.log(this.resForm.pEndTime);
@@ -263,14 +344,50 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 ::v-deep .searchTop .el-form-item,
 ::v-deep .searchTop .el-date-editor.el-input {
   width: 150px;
 }
 
+.searchTop {
+  border: 1px solid #1b8dda;
+  line-height: 1;
+  vertical-align: middle;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.searchTop ::v-deep .el-form .el-form-item {
+  margin: 0 10px;
+}
+
+.searchTop ::v-deep .el-form .el-form-item:nth-child(3) {
+  margin: 0;
+  text-align: center;
+}
+.searchTop ::v-deep .el-form .el-form-item:last-child {
+  width: 80px;
+}
 .areaChange {
   cursor: pointer;
   width: 20px !important;
+}
+.titleBox {
+  padding: 20px 0 20px 10%;
+  font-size: 30px;
+  color: #2577e3;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  vertical-align: middle;
+  align-self: flex-start;
+}
+.titleBox img {
+  width: 50px;
+  vertical-align: middle;
+}
+.centerDiv {
+  padding: 10px;
 }
 </style>

@@ -124,4 +124,7 @@ export default {
 ::v-deep .el-scrollbar__wrap {
   max-height: 200px;
 }
+.searchBtn ::v-deep .el-button {
+  width: 200px !important;
+}
 </style>

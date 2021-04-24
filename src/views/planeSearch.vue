@@ -1,6 +1,10 @@
 <template>
-  <div>
-    <div>
+  <div id="main">
+    <div class="imgBox">
+      <img src="./../assets/planeIcon/sky.jpeg" alt="" />
+    </div>
+    <div class="titleBox">
+      <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
       <span>欢迎来到航班查询系统</span>
     </div>
     <div><UserShow></UserShow></div>
@@ -55,7 +59,15 @@ export default {
 .searchBox {
   width: 500px;
   margin: auto;
-  border: 1px solid #000;
+  text-align: center;
+  padding: 0 6px 6px;
+  border: 1px solid #2f79da;
+  border-radius: 5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
 }
 ::v-deep .searchBox .el-tabs__nav {
   width: 100%;
@@ -81,5 +93,25 @@ export default {
 
 ::v-deep .el-scrollbar__wrap {
   max-height: 200px;
+}
+
+.titleBox {
+  padding: 20px 0 20px 10%;
+  font-size: 30px;
+  color: #2577e3;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  vertical-align: middle;
+}
+.titleBox img {
+  width: 50px;
+  vertical-align: middle;
+}
+.imgBox {
+  position: absolute;
+  z-index: -1;
+}
+.imgBox img {
+  max-width: 100%;
 }
 </style>

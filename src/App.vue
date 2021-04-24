@@ -42,4 +42,8 @@ html {
   /* -ms-overflow-style: none; */
   overflow: auto;
 }
+a {
+  text-decoration: none;
+  color: #000;
+}
 </style>

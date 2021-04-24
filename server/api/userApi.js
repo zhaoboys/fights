@@ -97,8 +97,32 @@ router.post("/newPwd", (req, res) => {
 
 //获取用户关注航班
 router.get("/planeCare", (req, res) => {
+  let params = req.query;
+  let sql = `select * from fs_userCare where uid='${params.uid}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
+//添加用户关注航班
+router.post("/addCare", (req, res) => {
   let params = req.body;
-  let sql = `select*from fs_userCare where uid='${params.uid}'`;
+  let sql = `insert into fs_userCare values('${params.uid}','${params.pid}')`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
+//删除用户关注航班
+router.post("/deleteCare", (req, res) => {
+  let params = req.body;
+  let sql = `DELETE FROM fs_userCare WHERE pid='${params.pid}' && uid='${params.uid}'`;
   conn.query(sql, function (err, result) {
     if (err) throw err;
     if (result) {
