@@ -115,6 +115,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="searchTo">查询</el-button>
+        <el-button @click="$refs['searchForm'].resetFields()">重置</el-button>
         <el-button @click="showAdd">新增</el-button>
       </el-form-item>
     </el-form>

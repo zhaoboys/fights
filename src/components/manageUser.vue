@@ -52,6 +52,11 @@
             {{ scope.row.isRoot == 1 ? "是" : "否" }}
           </template>
         </el-table-column>
+        <el-table-column label="关注航班">
+          <template slot-scope="scope">
+            <el-button @click="showCare(scope.row)">查看</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button @click="changRoot(scope.row)"
@@ -61,6 +66,29 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog
+      title="用户关注航班"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-table
+        :data="careTableData"
+        style="width: 100%"
+        v-loading="careLoading"
+      >
+        <el-table-column prop="uid" label="用户名" width="180">
+        </el-table-column>
+        <el-table-column prop="pid" label="航班ID" width="180">
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -68,6 +96,8 @@ export default {
   data() {
     return {
       userTableData: [],
+      careTableData: [],
+      careLoading: false,
       loading: false,
       searchForm: {
         uid: "",
@@ -85,12 +115,35 @@ export default {
           value: 0,
         },
       ],
+      dialogVisible: false,
     };
   },
   created() {
     this.getUserInfo({});
   },
   methods: {
+    async showCare(row) {
+      this.dialogVisible = true;
+      this.careLoading = true;
+      let res = await this.$request({
+        type: "get",
+        url: "user/planeCare",
+        params: {
+          uid: row.uid,
+        },
+      });
+      if (res) {
+        this.careTableData = res.data;
+        console.log(res);
+      }
+      setTimeout(() => {
+        this.careLoading = false;
+      }, 500);
+      console.log(row);
+    },
+    handleClose() {
+      this.dialogVisible = false;
+    },
     // 修改权限
     async changRoot(row) {
       this.$confirm("此操作将修改用户权限, 是否继续?", "提示", {
@@ -109,7 +162,7 @@ export default {
         });
         if (res) {
           console.log(res);
-          await this.getUserInfo();
+          await this.getUserInfo({});
           this.loading = false;
           this.$message({
             type: "success",

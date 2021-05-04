@@ -1,13 +1,15 @@
 <template>
   <div id="main">
+    <div><router-link to="/planeSearch"> 返回</router-link></div>
     <div class="titleBox">
       <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
       <span>欢迎来到航班查询系统</span>
     </div>
     <div class="mainTitle">个人中心</div>
-    <div>
+    <div class="personInfo">
       <p>用户名:{{ infoData.uid }}</p>
       <p>昵称:{{ infoData.uname }}</p>
+      <p @click="dialogVisible = true">修改个人信息</p>
     </div>
     <div id="tableDiv">
       <div style="text-align: center"><span>关注航班</span></div>
@@ -86,6 +88,26 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog
+      title="修改个人信息"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-form
+        ref="personForm"
+        :model="personForm"
+        label-width="80px"
+        :rules="personRules"
+      >
+        <el-form-item label="昵称" prop="uname">
+          <el-input v-model="personForm.uname"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="userChange('personForm')">修改</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -101,9 +123,17 @@ export default {
       planeData: [],
       tableLoading: false,
       companyData: [],
+      dialogVisible: false,
+      personForm: {
+        uname: window.sessionStorage.getItem("uname"),
+      },
+      personRules: {
+        uname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
+      },
     };
   },
   async created() {
+    this.tableLoading = true;
     this.infoData.uid = window.sessionStorage.getItem("uid");
     this.infoData.uname = window.sessionStorage.getItem("uname");
     let arr = [];
@@ -119,9 +149,47 @@ export default {
       }
     });
     this.tableData = text;
+    this.tableLoading = false;
     console.log(this.tableData);
   },
   methods: {
+    userChange(name) {
+      this.$refs[name].validate(async (valid) => {
+        if (valid) {
+          let res = await this.$request({
+            type: "post",
+            url: "/user/changeUserInfo",
+            params: {
+              uid: window.sessionStorage.getItem("uid"),
+              uname: this.personForm.uname,
+            },
+          });
+          if (res) {
+            this.getUserInfo();
+            this.dialogVisible = false;
+            this.$message.success("修改成功");
+          }
+        }
+      });
+    },
+    //获取用户信息
+    async getUserInfo() {
+      let res = await this.$request({
+        type: "get",
+        url: "/user/getUser",
+        params: {
+          uid: window.sessionStorage.getItem("uid"),
+        },
+      });
+      if (res) {
+        console.log(res.data.uname);
+        sessionStorage.setItem("uname", res.data[0].uname);
+        this.infoData.uname = window.sessionStorage.getItem("uname");
+      }
+    },
+    handleClose() {
+      this.dialogVisible = false;
+    },
     async deleteTo(row) {
       this.tableLoading = true;
       let res = await this.$request({
@@ -207,5 +275,15 @@ export default {
 .mainTitle {
   font-size: 20px;
   font-weight: bold;
+}
+.personInfo {
+  display: flex;
+}
+.personInfo p {
+  margin: 20px 20px;
+}
+.personInfo p:nth-child(3) {
+  cursor: pointer;
+  color: #2577e3;
 }
 </style>

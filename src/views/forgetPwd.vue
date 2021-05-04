@@ -1,6 +1,9 @@
 <template>
   <div id="main">
-    <div>忘记密码</div>
+    <div class="titleBox">
+      <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
+      <span>欢迎注册航班查询系统</span>
+    </div>
     <transition name="el-zoom-in-top">
       <el-form
         :model="pwdForm"
@@ -141,7 +144,7 @@ export default {
 #main ::v-deep .el-form {
   width: 400px;
   margin: auto;
-  border: 1px solid #000;
+  box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
   padding: 20px;
 }
 .questionDiv ::v-deep .el-form-item__content {
@@ -149,5 +152,27 @@ export default {
 }
 .btnDiv ::v-deep .el-form-item__content {
   margin: 0 !important;
+}
+.btnDiv .el-button {
+  margin-right: 10px;
+}
+.titleBox {
+  /* padding: 20px 0 20px 10%; */
+  font-size: 30px;
+  color: #2577e3;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  vertical-align: middle;
+  width: 100%;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+  background-color: #2e2363;
+  margin-bottom: 40px;
+  /* align-self: flex-start; */
+}
+.titleBox img {
+  width: 50px;
+  vertical-align: middle;
 }
 </style>

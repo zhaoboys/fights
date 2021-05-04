@@ -1,6 +1,7 @@
 <template>
   <div id="main">
-    <div>
+    <div class="titleBox">
+      <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
       <span>欢迎注册航班查询系统</span>
     </div>
     <div class="registerBox">
@@ -13,20 +14,33 @@
           label-position="right"
           class="registerFrom"
         >
-          <el-form-item prop="uid" label="用户名" label-width="80px">
+          <el-form-item prop="uid" label="用户名" label-width="120px">
             <el-input v-model="registerForm.uid"></el-input>
           </el-form-item>
-          <el-form-item prop="upwd" label="密码" label-width="80px">
-            <el-input v-model="registerForm.upwd"></el-input>
+          <el-form-item
+            prop="upwd"
+            label="密码"
+            show-password
+            label-width="120px"
+          >
+            <el-input show-password v-model="registerForm.upwd"></el-input>
           </el-form-item>
-          <el-form-item prop="uname" label="昵称" label-width="80px">
+          <el-form-item
+            prop="upwd"
+            label="再次输入密码"
+            show-password
+            label-width="120px"
+          >
+            <el-input show-password v-model="registerForm.upwdTow"></el-input>
+          </el-form-item>
+          <el-form-item prop="uname" label="昵称" label-width="120px">
             <el-input v-model="registerForm.uname"></el-input>
           </el-form-item>
           <el-form-item
             class="questionDiv"
             prop="uquestion"
             label="密保问题"
-            label-width="80px"
+            label-width="120px"
           >
             <el-select v-model="registerForm.uquestion">
               <el-option
@@ -37,10 +51,10 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item prop="uanswer" label="密保答案" label-width="80px">
+          <el-form-item prop="uanswer" label="密保答案" label-width="120px">
             <el-input v-model="registerForm.uanswer"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="lastBtn">
             <el-button @click="$router.push('/')">返回首页</el-button>
             <el-button @click="registerTo('registerForm')">注册</el-button>
           </el-form-item>
@@ -57,6 +71,7 @@ export default {
       registerForm: {
         uid: "",
         upwd: "",
+        upwdTow: "",
         uname: "",
         uquestion: 1,
         uanswer: "",
@@ -65,6 +80,7 @@ export default {
       registerRules: {
         uid: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         upwd: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        upwdTow: [{ required: true, message: "请输入密码", trigger: "blur" }],
         uname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
         uanswer: [
           { required: true, message: "请输入密保答案", trigger: "blur" },
@@ -94,6 +110,9 @@ export default {
     async registerTo(name) {
       this.$refs[name].validate(async (valid) => {
         if (valid) {
+          if (this.registerForm.upwd !== this.registerForm.upwdTow) {
+            return this.$message.error("两次密码不一致！");
+          }
           let res = await this.$request({
             type: "post",
             url: "user/register",
@@ -110,6 +129,7 @@ export default {
             if (res.data.msg === 1) {
               this.$message.success("注册成功");
               this.$refs[name].resetFields();
+              this.$router.push("/login");
             } else {
               this.$message.error("注册失败，用户名可能重复");
             }
@@ -130,9 +150,9 @@ export default {
   align-items: center;
 }
 .registerBox {
-  width: 50%;
+  width: 40%;
   /* padding: 0 30%; */
-  margin-top: 50px;
+  margin-top: 30px;
   text-align: center;
 }
 .registerFrom {
@@ -145,5 +165,27 @@ export default {
 }
 ::v-deep .questionDiv .el-form-item__content {
   text-align: left;
+}
+.titleBox {
+  /* padding: 20px 0 20px 10%; */
+  font-size: 30px;
+  color: #2577e3;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  vertical-align: middle;
+  width: 100%;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+  background-color: #2e2363;
+  /* align-self: flex-start; */
+}
+.titleBox img {
+  width: 50px;
+  vertical-align: middle;
+}
+.lastBtn {
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 </style>

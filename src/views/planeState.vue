@@ -15,7 +15,8 @@
         new Date(parseInt(searchForm.pStartTime)).getDate()
       }}
     </div>
-    <div>
+    <div v-if="planetableData.length === 0">暂无数据</div>
+    <div v-else>
       <div
         v-for="(item, index) of planetableData"
         :key="index"

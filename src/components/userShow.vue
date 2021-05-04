@@ -1,7 +1,7 @@
 <template>
   <div id="main">
     <div class="showBox">
-      <div v-if="userName === ''">
+      <div v-if="!userName">
         <div>
           <router-link to="/login">您好，请登录</router-link>
         </div>

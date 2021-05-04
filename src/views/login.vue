@@ -29,6 +29,7 @@
               v-model="loginForm.upwd"
               placeholder="请输入登录密码"
               @keyup.enter.native="loginTo('loginForm')"
+              show-password
             ></el-input>
           </el-form-item>
           <el-form-item class="registerTo">
@@ -37,6 +38,9 @@
           </el-form-item>
           <el-form-item class="btnBox">
             <el-button @click="loginTo('loginForm')">登录</el-button>
+          </el-form-item>
+          <el-form-item class="noLoginBox">
+            <span @click="noLoginTo">游客身份进入</span>
           </el-form-item>
         </el-form>
       </transition>
@@ -62,6 +66,22 @@ export default {
     this.loginShow = true;
   },
   methods: {
+    noLoginTo() {
+      this.$confirm("您是否以游客身份进入航班查询系统？, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        this.$notify({
+          title: "游客登录提示",
+          message: "三秒后您将自动进入航班查询系统",
+          position: "bottom-right",
+        });
+        setTimeout(() => {
+          this.$router.push("/planeSearch");
+        }, 3000);
+      });
+    },
     registerTo() {
       this.$router.push("/register");
     },
@@ -164,5 +184,10 @@ export default {
 .formTitle span {
   font-size: 18px;
   color: #111;
+}
+.noLoginBox span {
+  font-size: 5px;
+  cursor: pointer;
+  color: #a79c9c;
 }
 </style>

@@ -5,6 +5,14 @@
       <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
       <span>欢迎来到航班查询系统</span>
     </div>
+    <!-- 左侧栏搜索条件选择框 -->
+    <div class="searchLeftBox">
+      <el-form ref="searchLeftForm" :model="searchLeftForm">
+        <el-form-item label="出发机场">
+          <el-input v-model="searchLeftForm.name"></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 顶部搜索框开始 -->
     <div class="searchTop">
       <el-form ref="resForm" :model="resForm" :inline="true">
@@ -187,6 +195,9 @@ export default {
       tableLoading: false,
       companyData: [],
       userCareData: [],
+      searchLeftForm: {
+        name: "",
+      },
     };
   },
   async created() {
@@ -320,6 +331,7 @@ export default {
     // 航班搜索
     async searchTo() {
       console.log(this.resForm.pEndTime);
+      console.log(this.resForm);
       let res = await this.$request({
         type: "get",
         url: "/home/airSearch",
@@ -389,5 +401,15 @@ export default {
 }
 .centerDiv {
   padding: 10px;
+}
+.searchLeftBox {
+  position: absolute;
+  width: 200px;
+  height: 250px;
+  border: 1px solid rgba(16, 25, 99, 0.5);
+  border-radius: 5px;
+  top: 30%;
+  left: 10px;
+  z-index: 35;
 }
 </style>

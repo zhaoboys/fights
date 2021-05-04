@@ -2,7 +2,7 @@
   <div id="main">
     <span> 欢迎来到管理后台，管理员 </span>
     <span>
-      {{ $store.state.uname }}
+      {{ username }}
     </span>
     <span @click="quietTo">退出</span>
   </div>
@@ -10,7 +10,12 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      username: "",
+    };
+  },
+  created() {
+    this.username = window.sessionStorage.getItem("uname");
   },
   methods: {
     quietTo() {

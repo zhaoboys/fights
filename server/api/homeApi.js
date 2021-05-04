@@ -116,6 +116,7 @@ router.get("/airSearch", (req, res) => {
     string += ` and pStartTime between ${params.pStartTime} and ${params.pEndTime}`;
   }
   let sql = `select * from fs_info where ${string}`;
+  // console.log(sql);
   conn.query(sql, function (err, result) {
     if (err) throw err;
     if (result) {
