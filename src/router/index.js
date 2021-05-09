@@ -9,6 +9,7 @@ import PlaneState from "../views/planeState.vue";
 import ManageBack from "../views/manageBack.vue";
 import ForgetPwd from "../views/forgetPwd.vue";
 import PersonCenter from "./../views/personCenter.vue";
+import BuyTickets from "./../views/buyTickets.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -56,6 +57,11 @@ const routes = [
     path: "/personCenter",
     name: "PersonCenter",
     component: PersonCenter,
+  },
+  {
+    path: "/buyTickets",
+    name: "BuyTickets",
+    component: BuyTickets,
   },
   // {
   //   path: "/about",

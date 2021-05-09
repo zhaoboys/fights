@@ -9,7 +9,36 @@
     <div class="searchLeftBox">
       <el-form ref="searchLeftForm" :model="searchLeftForm">
         <el-form-item label="出发机场">
-          <el-input v-model="searchLeftForm.name"></el-input>
+          <el-select
+            v-model="searchLeftForm.pStartArea"
+            filterable
+            placeholder="请选择出发机场"
+            clearable
+          >
+            <el-option
+              v-for="(item, index) in planeAreaObj.start"
+              :key="index"
+              :label="item.cityArea"
+              :value="item.cityArea"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="到达机场" prop="pEndArea">
+          <el-select
+            v-model="searchLeftForm.pEndArea"
+            filterable
+            placeholder="请选择"
+            clearable
+          >
+            <el-option
+              v-for="(item, index) in planeAreaObj.end"
+              :key="index"
+              :label="item.cityArea"
+              :value="item.cityArea"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
     </div>
@@ -34,6 +63,7 @@
             v-model="resForm.pStartCity"
             filterable
             placeholder="请选择起飞地"
+            @change="startChange"
           >
             <el-option
               v-for="(item, index) in cityArr"
@@ -54,6 +84,7 @@
             v-model="resForm.pEndCity"
             filterable
             placeholder="请选择将落地"
+            @change="endChange"
           >
             <el-option
               v-for="(item, index) in cityArr"
@@ -148,7 +179,7 @@
             <div>{{ scope.row.pEndArea }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="关注" width="90px">
+        <el-table-column label="关注" width="90px" v-if="!!userName">
           <template slot-scope="scope">
             <el-button size="small" @click="changeCare($event, scope.row)">
               {{
@@ -158,6 +189,13 @@
                   : "取消关注"
               }}
             </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="订票" width="90px" v-if="!!userName">
+          <template slot-scope="scope">
+            <el-button @click="ticketTo(scope.row)" size="small"
+              >去订票</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -196,11 +234,19 @@ export default {
       companyData: [],
       userCareData: [],
       searchLeftForm: {
-        name: "",
+        pStartArea: "",
+        pEndArea: "",
       },
+      planeAreaObj: {
+        start: [],
+        end: [],
+      },
+      userName: "",
     };
   },
   async created() {
+    this.userName = sessionStorage.getItem("uname");
+    console.log(this.userName);
     this.searchForm = this.$route.query;
     this.resForm = {
       pStartCity: this.$route.query.pStartCity,
@@ -213,6 +259,8 @@ export default {
     };
     console.log(this.$route.query, 123);
     let arr = [];
+    arr.push(this.getCityPlane(this.$route.query.pStartCity, "start"));
+    arr.push(this.getCityPlane(this.$route.query.pEndCity, "end"));
     arr.push(this.planeSearch());
     arr.push(this.getCity());
     arr.push(this.getCopany());
@@ -220,6 +268,32 @@ export default {
     await Promise.all(arr);
   },
   methods: {
+    // 前往订票页
+    ticketTo(row) {
+      this.$router.push({
+        path: "/buyTickets",
+        query: { ...row },
+      });
+    },
+    //根据城市选机场
+    async getCityPlane(city, arr) {
+      let res = await this.$request({
+        type: "get",
+        url: "/home/getPlaneArea",
+        params: { city },
+      });
+      if (res) {
+        this.planeAreaObj[arr] = res.data;
+      }
+    },
+    startChange() {
+      this.getCityPlane(this.resForm.pStartCity, "start");
+      this.searchLeftForm.pStartArea = "";
+    },
+    endChange() {
+      this.getCityPlane(this.resForm.pEndCity, "end");
+      this.searchLeftForm.pEndArea = "";
+    },
     async changeCare(e, row) {
       if (e.target.innerHTML === "<!----><!----><span> 关注 </span>") {
         let res = await this.$request({
@@ -303,6 +377,8 @@ export default {
       let a = this.resForm.pStartCity;
       this.resForm.pStartCity = this.resForm.pEndCity;
       this.resForm.pEndCity = a;
+      this.getCityPlane(this.resForm.pStartCity, "start");
+      this.getCityPlane(this.resForm.pEndCity, "end");
     },
     //获取航空公司
     async getCopany() {
@@ -330,6 +406,9 @@ export default {
     },
     // 航班搜索
     async searchTo() {
+      if (this.resForm.pStartCity === this.resForm.pEndCity) {
+        return this.$message.error("出发城市和到达城市不能相同");
+      }
       console.log(this.resForm.pEndTime);
       console.log(this.resForm);
       let res = await this.$request({
@@ -338,6 +417,8 @@ export default {
         params: {
           pStartCity: this.resForm.pStartCity,
           pEndCity: this.resForm.pEndCity,
+          pStartArea: this.searchLeftForm.pStartArea,
+          pEndArea: this.searchLeftForm.pEndArea,
           pStartTime: this.$oneDayTime(this.resForm.pStartTime)[0],
           pEndTime: this.$oneDayTime(this.resForm.pEndTime)[1],
         },
@@ -404,9 +485,10 @@ export default {
 }
 .searchLeftBox {
   position: absolute;
+  padding: 10px;
   width: 200px;
   height: 250px;
-  border: 1px solid rgba(16, 25, 99, 0.5);
+  border: 1px solid #1b8dda;
   border-radius: 5px;
   top: 30%;
   left: 10px;

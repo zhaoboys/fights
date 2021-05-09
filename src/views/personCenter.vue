@@ -88,6 +88,42 @@
         </el-table-column>
       </el-table>
     </div>
+    <!-- 显示已经购买的机票 -->
+    <div class="userTickets">
+      <div>购买机票</div>
+      <el-table
+        :data="ticketData"
+        style="width: 100%"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column prop="uid" label="用户名" width="180">
+        </el-table-column>
+        <el-table-column prop="pname" label="航班名称" width="180">
+        </el-table-column>
+        <el-table-column prop="bname" label="订票人" width="180">
+        </el-table-column>
+        <el-table-column prop="bphone" label="订票人手机号" width="180">
+        </el-table-column>
+        <el-table-column prop="bIndextity" label="订票人身份证" width="180">
+        </el-table-column>
+        <el-table-column prop="ticket" label="票价" width="180">
+        </el-table-column>
+        <el-table-column prop="isUsual" label="是否经济舱" width="180">
+          <template slot-scope="scope">
+            {{ scope.row.isUsual == 1 ? "是" : "否" }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="small" @click="ticketDelete(scope.row)"
+              >取消订票</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div></div>
     <el-dialog
       title="修改个人信息"
       :visible.sync="dialogVisible"
@@ -130,6 +166,7 @@ export default {
       personRules: {
         uname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
       },
+      ticketData: [],
     };
   },
   async created() {
@@ -140,6 +177,7 @@ export default {
     arr.push(this.getAllPlane());
     arr.push(this.getUserCare());
     arr.push(this.getCopany());
+    arr.push(this.getUserTicket());
     await Promise.all(arr);
     let text = [];
     this.userCareData.forEach((item) => {
@@ -153,6 +191,69 @@ export default {
     console.log(this.tableData);
   },
   methods: {
+    // 删除订票
+    ticketDelete(row) {
+      this.$confirm("此操作进行航班退票, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(async () => {
+        console.log(row);
+        let res = await this.$request({
+          type: "post",
+          url: "/ticket/deleteTicket",
+          params: {
+            uid: row.uid,
+            pid: row.pid,
+            pname: row.pname,
+            bname: row.bname,
+            ticket: row.ticket,
+          },
+        });
+        if (res) {
+          this.getUserTicket();
+          this.$message({
+            type: "success",
+            message: "退票成功!",
+          });
+          let res = await this.$request({
+            type: "get",
+            url: "/ticket/getNumber",
+            params: {
+              pid: row.pid,
+            },
+          });
+          let obj = {
+            pid: row.pid,
+          };
+          this.ticketChoose == "1"
+            ? (obj.usualNumber = res.data[0].usualNumber + 1)
+            : (obj.noUsualNumber = res.data[0].noUsualNumber + 1);
+          await this.$request({
+            type: "post",
+            url: "/ticket/updataTickets",
+            params: {
+              ...obj,
+            },
+          });
+        }
+      });
+      console.log(row);
+    },
+    //获取用户订票
+    async getUserTicket() {
+      let res = await this.$request({
+        type: "get",
+        url: "/ticket/getUserTickets",
+        params: {
+          uid: window.sessionStorage.getItem("uid"),
+        },
+      });
+      if (res) {
+        console.log(res);
+        this.ticketData = res.data;
+      }
+    },
     userChange(name) {
       this.$refs[name].validate(async (valid) => {
         if (valid) {
@@ -285,5 +386,7 @@ export default {
 .personInfo p:nth-child(3) {
   cursor: pointer;
   color: #2577e3;
+}
+.userTickets {
 }
 </style>

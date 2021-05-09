@@ -26,7 +26,7 @@
             <el-input show-password v-model="registerForm.upwd"></el-input>
           </el-form-item>
           <el-form-item
-            prop="upwd"
+            prop="upwdTow"
             label="再次输入密码"
             show-password
             label-width="120px"

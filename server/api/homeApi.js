@@ -109,6 +109,12 @@ router.get("/airSearch", (req, res) => {
     if (key === "pEndTime") {
       continue;
     }
+    if (key === "pStartArea" && params[key] === "") {
+      continue;
+    }
+    if (key === "pEndArea" && params[key] === "") {
+      continue;
+    }
     string += `${key}='${params[key]}' and `;
   }
   string = string.slice(0, -4);

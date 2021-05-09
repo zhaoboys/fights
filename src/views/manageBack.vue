@@ -10,6 +10,7 @@
           <div v-if="stateIndex == 1"><ManagePlane></ManagePlane></div>
           <div v-if="stateIndex == 2"><ManageUser></ManageUser></div>
           <div v-if="stateIndex == 3"><ManageCity></ManageCity></div>
+          <div v-if="stateIndex == 4"><ManageTicket></ManageTicket></div>
         </el-main>
       </el-container>
     </el-main>
@@ -21,6 +22,7 @@ import ManageHeader from "./../components/manageHeader";
 import ManagePlane from "./../components/managePlane";
 import ManageUser from "./../components/manageUser";
 import ManageCity from "./../components/manageCity";
+import ManageTicket from "./../components/manageTicket";
 export default {
   components: {
     ManageAside,
@@ -28,6 +30,7 @@ export default {
     ManagePlane,
     ManageUser,
     ManageCity,
+    ManageTicket,
   },
   data() {
     return {

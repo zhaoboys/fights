@@ -2,7 +2,7 @@
   <div id="main">
     <div class="titleBox">
       <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
-      <span>欢迎注册航班查询系统</span>
+      <span>欢迎来到航班查询系统</span>
     </div>
     <transition name="el-zoom-in-top">
       <el-form
