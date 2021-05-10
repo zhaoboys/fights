@@ -12,6 +12,9 @@ router.get("/getNumber", (req, res) => {
   let params = req.query;
   let string = "";
   for (let key in params) {
+    if (params[key] === "") {
+      continue;
+    }
     string += `${key}='${params[key]}' and `;
   }
   string = string.slice(0, -4);
@@ -89,6 +92,19 @@ router.post("/updataTickets", (req, res) => {
   }
   string = string.slice(0, -1);
   let sql = `update  fs_ticketPrice set ${string} WHERE pid ='${[params.pid]}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+      console.log(sql);
+    }
+  });
+});
+
+//添加新机票信息
+router.post("/addTicket", (req, res) => {
+  let params = req.body;
+  let sql = `INSERT INTO   fs_ticketPrice values('${params.pid}','${params.usualNumber}','${params.usualPrice}','${params.noUsualNumber}','${params.noUsualPrice}')`;
   conn.query(sql, function (err, result) {
     if (err) throw err;
     if (result) {

@@ -134,7 +134,7 @@
       >
         <el-table-column prop="pname" sortable label="航班信息" width="180">
           <template slot-scope="scope">
-            <div>
+            <div v-if="!scope.row.cid">
               {{ companyData.find((item) => item.cid === scope.row.cid).cname }}
             </div>
             <div>{{ scope.row.pname }}</div>

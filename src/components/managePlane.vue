@@ -92,6 +92,7 @@
           :rules="changePlaneInfoForm"
           label-width="100px"
           class="formLeft"
+          size="mini"
         >
           <el-form-item label="航班id" prop="pid">
             <el-input v-model="changePlaneInfo.pid"></el-input>

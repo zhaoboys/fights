@@ -7,32 +7,36 @@
     </div>
     <!-- 航班信息展示 -->
     <div>
-      <el-form :model="planeInfoData">
-        <el-form-item label="航班公司" label-width="120px">
+      <el-form :model="planeInfoData" :inline="true" class="inforData">
+        <el-form-item
+          label="航班公司:"
+          label-width="120px"
+          v-if="!planeInfoData.cid"
+        >
           {{ companyData.find((item) => item.cid === planeInfoData.cid).cname }}
         </el-form-item>
-        <el-form-item label="航班名称" label-width="120px">
+        <el-form-item label="航班名称:" label-width="120px">
           {{ planeInfoData.pname }}
         </el-form-item>
-        <el-form-item label="机型" label-width="120px">
+        <el-form-item label="机型:" label-width="120px">
           {{ planeInfoData.pmodel }}
         </el-form-item>
-        <el-form-item label="出发城市" label-width="120px">
+        <el-form-item label="出发城市:" label-width="120px">
           {{ planeInfoData.pStartCity }}
         </el-form-item>
-        <el-form-item label="到达城市" label-width="120px">
+        <el-form-item label="到达城市:" label-width="120px">
           {{ planeInfoData.pEndCity }}
         </el-form-item>
-        <el-form-item label="出发机场" label-width="120px">
+        <el-form-item label="出发机场:" label-width="120px">
           {{ planeInfoData.pStartArea }}
         </el-form-item>
-        <el-form-item label="到达机场" label-width="120px">
+        <el-form-item label="到达机场:" label-width="120px">
           {{ planeInfoData.pEndArea }}
         </el-form-item>
-        <el-form-item label="到达机场" label-width="120px">
+        <el-form-item label="到达机场:" label-width="120px">
           {{ planeInfoData.pEndArea }}
         </el-form-item>
-        <el-form-item label="出发时间" label-width="120px">
+        <el-form-item label="出发时间:" label-width="120px">
           {{
             new Date(parseInt(planeInfoData.pStartTime)).getFullYear() +
             "年" +
@@ -40,7 +44,7 @@
             $getHours(parseInt(planeInfoData.pStartTime))[1]
           }}
         </el-form-item>
-        <el-form-item label="到达时间" label-width="120px">
+        <el-form-item label="到达时间:" label-width="120px">
           {{
             new Date(parseInt(planeInfoData.pEndTime)).getFullYear() +
             "年" +
@@ -48,19 +52,23 @@
             $getHours(parseInt(planeInfoData.pEndTime))[1]
           }}
         </el-form-item>
-        <el-form-item label="机票选择" label-width="120px">
+        <el-form-item label="机票选择:" label-width="120px">
           <el-radio-group v-model="ticketChoose" size="small">
             <el-radio label="1" border>经济舱</el-radio>
             <el-radio label="0" border>商务舱</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="剩余机票"
+          label="剩余机票:"
           label-width="120px"
-          v-if="ticketChoose !== ''"
+          v-if="ticketChoose !== '' || planeTicketPrice.length === 0"
         >
           <span v-if="ticketChoose === '1'">
-            {{ planeTicketPrice[0].usualNumber }}
+            {{
+              planeTicketPrice[0].usualNumber
+                ? planeTicketPrice[0].usualNumber
+                : 0
+            }}
           </span>
           <span v-else>{{
             planeTicketPrice[0].noUsualNumber
@@ -69,16 +77,24 @@
           }}</span>
         </el-form-item>
         <el-form-item
-          label="机票价格"
+          label="机票价格:"
           label-width="120px"
-          v-show="ticketChoose !== ''"
+          v-if="ticketChoose !== ''"
         >
           <span v-if="ticketChoose === '1'">
-            {{ planeTicketPrice[0].usualPrice }}
+            {{
+              planeTicketPrice[0].usualPrice
+                ? planeTicketPrice[0].usualPrice
+                : 0
+            }}
           </span>
-          <span v-else>{{ planeTicketPrice[0].noUsualPrice }}</span>
+          <span v-else>{{
+            planeTicketPrice[0].noUsualPrice
+              ? planeTicketPrice[0].noUsualPrice
+              : 0
+          }}</span>
         </el-form-item>
-        <el-form-item label="乘坐人" label-width="120px">
+        <el-form-item label="乘坐人:" label-width="120px">
           <el-button
             @click="dialogVisible = true"
             :disabled="userTableData.length > 0"
@@ -89,21 +105,21 @@
             :data="userTableData"
             style="width: 100%"
           >
-            <el-table-column prop="bname" label="姓名" width="180">
+            <el-table-column prop="bname" label="姓名:" width="180">
             </el-table-column>
-            <el-table-column prop="bphone" label="手机号" width="180">
+            <el-table-column prop="bphone" label="手机号:" width="180">
             </el-table-column>
-            <el-table-column prop="bIndextity" label="身份证">
+            <el-table-column prop="bIndextity" label="身份证:">
             </el-table-column>
           </el-table>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="lastBtn">
           <el-button @click="ticketTo">购票</el-button>
         </el-form-item>
       </el-form>
     </div>
     <el-dialog
-      title="添加乘坐人"
+      title="添加乘坐人:"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose"
@@ -115,13 +131,13 @@
         :rules="userRulesForm"
         label-width="120px"
       >
-        <el-form-item label="真实姓名" prop="bname">
+        <el-form-item label="真实姓名:" prop="bname">
           <el-input v-model="userForm.bname"></el-input>
         </el-form-item>
-        <el-form-item label="手机号" prop="bphone">
+        <el-form-item label="手机号:" prop="bphone">
           <el-input v-model="userForm.bphone"></el-input>
         </el-form-item>
-        <el-form-item label="身份证" prop="bIndextity">
+        <el-form-item label="身份证:" prop="bIndextity">
           <el-input v-model="userForm.bIndextity"></el-input>
         </el-form-item>
         <el-form-item>
@@ -301,5 +317,14 @@ export default {
 .titleBox img {
   width: 50px;
   vertical-align: middle;
+}
+.inforData {
+  width: 600px;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+  padding: 20px;
+}
+.lastBtn {
+  width: 100%;
+  text-align: center;
 }
 </style>

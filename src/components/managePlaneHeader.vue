@@ -5,6 +5,7 @@
       :inline="true"
       ref="searchForm"
       label-width="80px"
+      size="mini"
     >
       <el-form-item label="航班id">
         <el-input v-model="searchForm.pid"></el-input>
@@ -114,9 +115,9 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button @click="searchTo">查询</el-button>
+        <el-button @click="searchTo" type="primary">查询</el-button>
         <el-button @click="$refs['searchForm'].resetFields()">重置</el-button>
-        <el-button @click="showAdd">新增</el-button>
+        <el-button @click="showAdd" type="warning">新增</el-button>
       </el-form-item>
     </el-form>
     <el-dialog
@@ -131,6 +132,7 @@
         ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
+        size="mini"
       >
         <el-form-item label="航班id" prop="pid">
           <el-input v-model="ruleForm.pid"></el-input>

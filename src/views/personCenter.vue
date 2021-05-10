@@ -21,7 +21,7 @@
       >
         <el-table-column prop="cid" label="航班公司" width="100">
           <template slot-scope="scope">
-            <div>
+            <div v-if="!scope.row.cname">
               {{ companyData.find((item) => item.cid === scope.row.cid).cname }}
             </div>
             <div>{{ scope.row.pname }}</div>

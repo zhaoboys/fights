@@ -45,6 +45,7 @@
         ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
+        size="mini"
       >
         <el-form-item prop="id" label="序号">
           <el-input v-model="ruleForm.id" disabled></el-input>

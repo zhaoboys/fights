@@ -1,7 +1,12 @@
 <template>
   <div id="main">
     <div>
-      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        :model="searchForm"
+        class="demo-form-inline"
+        size="mini"
+      >
         <el-form-item label="用户名">
           <el-input v-model="searchForm.uid"></el-input>
         </el-form-item>
@@ -30,7 +35,9 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click="getUserInfo(searchForm)">查询</el-button>
+          <el-button @click="getUserInfo(searchForm)" type="primary"
+            >查询</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
@@ -54,12 +61,21 @@
         </el-table-column>
         <el-table-column label="关注航班">
           <template slot-scope="scope">
-            <el-button @click="showCare(scope.row)">查看</el-button>
+            <el-button @click="showCare(scope.row)" type="info" size="small"
+              >查看</el-button
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="用户订票">
+          <template slot-scope="scope">
+            <el-button @click="showTicket(scope.row)" type="info" size="small"
+              >查看</el-button
+            >
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button @click="changRoot(scope.row)"
+            <el-button @click="changRoot(scope.row)" size="small"
               >{{ scope.row.isRoot == 0 ? "设为管理员 " : "设为普通用户 " }}
             </el-button>
           </template>
@@ -84,6 +100,46 @@
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="用户已购机票"
+      :visible.sync="ticketDialogVisible"
+      width="40%"
+      :before-close="ticketHandleClose"
+    >
+      <el-table
+        :data="userTicketData"
+        style="width: 100%"
+        height="400"
+        v-loading="ticketLoading"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column prop="uid" label="用户ID" width="100">
+        </el-table-column>
+        <el-table-column prop="pid" label="航班ID" width="100">
+        </el-table-column>
+        <el-table-column prop="pname" label="航班名称" width="100">
+        </el-table-column>
+        <el-table-column prop="bname" label="订票人" width="100">
+        </el-table-column>
+        <el-table-column prop="bphone" label="订票人手机号" width="180">
+        </el-table-column>
+        <el-table-column prop="bIndextity" label="订票人身份证" width="180">
+        </el-table-column>
+        <el-table-column label="舱位" width="100">
+          <template slot-scope="scope">
+            {{ scope.row.isUaual == 1 ? "经济舱" : "商务舱" }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="ticket" label="票价" width="100">
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false"
           >确 定</el-button
         >
@@ -116,12 +172,31 @@ export default {
         },
       ],
       dialogVisible: false,
+      ticketDialogVisible: false,
+      userTicketData: [],
+      ticketLoading: false,
     };
   },
   created() {
     this.getUserInfo({});
   },
   methods: {
+    // 显示用户订票
+    async showTicket(row) {
+      this.ticketDialogVisible = true;
+      let res = await this.$request({
+        type: "get",
+        url: "/ticket/getUserTickets",
+        params: {
+          uid: row.uid,
+        },
+      });
+      if (res) {
+        this.userTicketData = res.data;
+        console.log(this.userTicketData);
+        this.ticketLoading = false;
+      }
+    },
     async showCare(row) {
       this.dialogVisible = true;
       this.careLoading = true;
@@ -193,6 +268,9 @@ export default {
         this.userTableData = res.data;
         this.loading = false;
       }
+    },
+    ticketHandleClose() {
+      this.ticketDialogVisible = false;
     },
   },
 };

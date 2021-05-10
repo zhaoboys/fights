@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="form" :model="form" label-width="80px" inline>
+    <el-form ref="form" :model="form" label-width="80px" inline size="mini">
       <el-form-item label="航班id">
         <el-input v-model="form.id"></el-input>
       </el-form-item>
@@ -35,8 +35,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="searchTo">搜索</el-button>
-        <el-button @click="dialogVisible = true">添加</el-button>
+        <el-button @click="searchTo" type="primary">搜索</el-button>
+        <el-button @click="dialogVisible = true" type="warning">添加</el-button>
       </el-form-item>
     </el-form>
     <el-dialog
@@ -51,6 +51,7 @@
         ref="addForm"
         label-width="100px"
         class="demo-ruleForm"
+        size="mini"
       >
         <el-form-item label="航班id" prop="id">
           <el-input v-model.number="addForm.id"></el-input>
