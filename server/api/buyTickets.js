@@ -113,4 +113,76 @@ router.post("/addTicket", (req, res) => {
     }
   });
 });
+
+//获取酒店信息
+router.get("/getPub", (req, res) => {
+  let params = req.query;
+  let sql = ``;
+  if (JSON.stringify(params) === "{}") {
+    sql = `select * from fs_cityPub`;
+  } else {
+    let string = "";
+    for (let key in params) {
+      if (!params[key]) {
+        continue;
+      }
+      string += `${key}='${params[key]}' and `;
+    }
+    string = string.slice(0, -4);
+    sql = `select * from fs_cityPub where ${string}`;
+  }
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+      // console.log(sql);
+    }
+  });
+});
+
+// 修改酒店信息
+router.post("/updataPub", (req, res) => {
+  let params = req.body;
+  let string = "";
+  for (let key in req.body) {
+    if (key !== "id") {
+      string += `${key}='${req.body[key]}', `;
+    }
+  }
+  string = string.slice(0, -2);
+  let sql = `update fs_cityPub set ${string} where id=${params.id}`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+//删除酒店
+router.post("/deletePub", (req, res) => {
+  let params = req.body;
+  let sql = `DELETE FROM fs_cityPub where id='${params.id}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+// 添加酒店星系
+router.post("/addPub", (req, res) => {
+  let params = req.body;
+  let sql = `insert into fs_cityPub values('${params.city}','${params.pub}','${params.id}','${params.http}')`;
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) {
+      res.send({ msg: 0 });
+    }
+    if (result) {
+      if (result.affectedRows !== 0) {
+        res.send({ msg: 1 });
+      }
+    }
+  });
+});
 module.exports = router;

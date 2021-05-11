@@ -48,6 +48,7 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
         v-loading="loading"
+        stripe
       >
         <el-table-column prop="uid" label="用户名"></el-table-column>
         <!-- <el-table-column prop="upwd" label="用户密码"></el-table-column> -->

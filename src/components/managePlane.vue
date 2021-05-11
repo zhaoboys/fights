@@ -17,6 +17,7 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
         v-loading="tableLoading"
+        stripe
       >
         <el-table-column prop="pid" label="航班id" width="80">
         </el-table-column>

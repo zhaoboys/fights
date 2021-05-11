@@ -9,20 +9,24 @@
       active-text-color="#ffd04b"
     >
       <el-menu-item index="1">
-        <i class="el-icon-menu"></i>
+        <i class="el-icon-s-promotion"></i>
         <span slot="title">航班管理</span>
       </el-menu-item>
       <el-menu-item index="2">
-        <i class="el-icon-document"></i>
+        <i class="el-icon-s-custom"></i>
         <span slot="title">用户管理</span>
       </el-menu-item>
       <el-menu-item index="3">
-        <i class="el-icon-setting"></i>
+        <i class="el-icon-office-building"></i>
         <span slot="title">城市管理</span>
       </el-menu-item>
       <el-menu-item index="4">
-        <i class="el-icon-setting"></i>
+        <i class="el-icon-postcard"></i>
         <span slot="title">机票管理</span>
+      </el-menu-item>
+      <el-menu-item index="5">
+        <i class="el-icon-discount"></i>
+        <span slot="title">酒店管理</span>
       </el-menu-item>
     </el-menu>
   </div>

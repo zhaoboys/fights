@@ -12,6 +12,8 @@
       :header-cell-style="{ 'text-align': 'center' }"
       :cell-style="{ 'text-align': 'center' }"
       v-loading="loading"
+      height="500"
+      stripe
     >
       <el-table-column label="序号" prop="id"></el-table-column>
       <el-table-column label="城市" prop="city"></el-table-column>

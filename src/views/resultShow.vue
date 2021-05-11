@@ -42,6 +42,10 @@
         </el-form-item>
       </el-form>
     </div>
+    <!-- 右侧酒店推荐div -->
+    <div class="pubBox">
+      <RecommendPub :city="$route.query.pEndCity"></RecommendPub>
+    </div>
     <!-- 顶部搜索框开始 -->
     <div class="searchTop">
       <el-form ref="resForm" :model="resForm" :inline="true">
@@ -205,9 +209,11 @@
 </template>
 <script>
 import UserShow from "./../components/userShow";
+import RecommendPub from "./../components/recommendPub";
 export default {
   components: {
     UserShow,
+    RecommendPub,
   },
   data() {
     return {
@@ -492,6 +498,17 @@ export default {
   border-radius: 5px;
   top: 30%;
   left: 10px;
+  z-index: 35;
+}
+.pubBox {
+  position: absolute;
+  padding: 10px;
+  width: 200px;
+  height: 250px;
+  border: 1px solid #1b8dda;
+  border-radius: 5px;
+  top: 30%;
+  right: 10px;
   z-index: 35;
 }
 </style>
