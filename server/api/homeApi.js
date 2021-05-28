@@ -115,6 +115,9 @@ router.get("/airSearch", (req, res) => {
     if (key === "pEndArea" && params[key] === "") {
       continue;
     }
+    if (params[key] === "") {
+      continue;
+    }
     string += `${key}='${params[key]}' and `;
   }
   string = string.slice(0, -4);
@@ -172,4 +175,85 @@ router.post("/addCityPlane", (req, res) => {
   });
 });
 
+//删除航班动态
+router.post("/deleteState", (req, res) => {
+  let params = req.body;
+  let sql = `DELETE FROM fs_planeState WHERE pid='${params.pid}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
+//查询航班动态
+router.get("/searchState", (req, res) => {
+  let params = req.query;
+  let sql = "";
+  let string = "";
+  if (JSON.stringify(params) == `{}`) {
+    sql = `select * from fs_planeState`;
+  } else {
+    for (let key in params) {
+      if (params[key] == "") {
+        continue;
+      }
+      if (key == "id") {
+        continue;
+      }
+      string += ` ${key}='${params[key]}' and`;
+    }
+    string = string.slice(0, -4);
+    sql = `select * from fs_planeState where ${string}`;
+  }
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
+//修改航班动态
+router.post("/changeState", (req, res) => {
+  let params = req.body;
+  let string = "";
+  for (let key in params) {
+    if (key === "pid") {
+      continue;
+    }
+    string += `${key}='${params[key]}' ,`;
+  }
+  string = string.slice(0, -1);
+  let sql = `update  fs_planeState set ${string} WHERE pid ='${params.pid}'`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result) {
+      res.send(result);
+    }
+  });
+});
+
+//增加航班动态
+router.post("/addState", (req, res) => {
+  let params = req.body;
+  let string = "";
+  for (let key in params) {
+    string += `'${params[key]}' ,`;
+  }
+  string = string.slice(0, -1);
+  let sql = `insert into fs_planeState values(${string})`;
+  conn.query(sql, function (err, result) {
+    if (err) {
+      throw err;
+    }
+    if (result) {
+      if (result.affectedRows !== 0) {
+        res.send({ msg: 1 });
+      }
+    }
+  });
+});
 module.exports = router;

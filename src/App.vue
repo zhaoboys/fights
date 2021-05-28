@@ -37,10 +37,19 @@ export default {
   /* text-align: center; */
   color: #2c3e50;
   /* background: #aaa; */
+  /* background-color: #1fc8db;*/
+  /* background-image: linear-gradient(
+    141deg,
+    #9fb8ad 0%,
+    #1fc8db 51%,
+    #2cb5e8 75%
+  ); */
+  background-image: linear-gradient(0deg, #84d1da 0%, #c0f1f7 55%, #fff 100%);
 }
 html {
   /* -ms-overflow-style: none; */
   overflow: auto;
+  overflow-x: hidden;
 }
 a {
   text-decoration: none;

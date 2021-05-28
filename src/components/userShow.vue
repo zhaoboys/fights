@@ -3,10 +3,10 @@
     <div class="showBox">
       <div v-if="!userName">
         <div>
-          <router-link to="/login">您好，请登录</router-link>
+          <router-link to="/">您好，请登录</router-link>
         </div>
         <div>
-          <router-link to="/register"> 免费注册 </router-link>
+          <router-link to="/register"> 没有账号？免费注册! </router-link>
         </div>
       </div>
       <div class="titleDiv" v-else>
@@ -22,6 +22,10 @@
           <span> 管理后台 </span>
         </router-link>
       </div>
+      <div class="backDiv"><span @click="backTo"> 返回</span></div>
+      <div class="backDiv" v-if="userName">
+        <span @click="quitTo">退出</span>
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +38,22 @@ export default {
   },
   created() {
     this.userName = sessionStorage.getItem("uname");
+  },
+  methods: {
+    backTo() {
+      history.go(-1);
+    },
+    quitTo() {
+      this.$confirm("是否退出航班查询系统, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        sessionStorage.removeItem("uid");
+        sessionStorage.removeItem("uname");
+        this.$router.push("/");
+      });
+    },
   },
 };
 </script>
@@ -66,5 +86,12 @@ export default {
 
 .titleDiv div {
   margin-right: 10px;
+}
+.backDiv {
+  cursor: pointer;
+  margin-left: 10px;
+}
+.backDiv span {
+  color: rgb(22, 102, 206);
 }
 </style>

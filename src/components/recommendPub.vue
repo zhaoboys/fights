@@ -4,9 +4,21 @@
     <ul class="pubUl">
       <li v-for="(item, i) in pubData" :key="i" class="pubLi">
         <a :href="item.http" target="_blank">
-          <span>
-            {{ item.pub }}
-          </span>
+          <div>
+            <span>
+              {{ item.pub }}
+            </span>
+          </div>
+          <div>
+            <el-rate
+              v-model="item.ratings"
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}"
+            >
+            </el-rate>
+          </div>
         </a>
       </li>
     </ul>
@@ -16,15 +28,21 @@
 export default {
   props: {
     city: null,
-    pubData: [],
   },
   data() {
-    return {};
+    return {
+      pubData: [],
+    };
   },
   async created() {
     let arr = [];
     arr.push(this.getPub());
     await Promise.all(arr);
+  },
+  watch: {
+    city(newVal) {
+      this.getPub(newVal);
+    },
   },
   methods: {
     // 获取酒店推荐
@@ -52,6 +70,9 @@ export default {
 }
 .pubLi:hover {
   background: rgb(189, 192, 192);
+}
+.pubLi .el-rate {
+  cursor: pointer;
 }
 .pubUl {
   list-style-type: none;

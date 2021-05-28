@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+// import Home from "../views/Home.vue";
 import Login from "../views/login.vue";
 import Register from "../views/register";
 import PlaneSearch from "../views/planeSearch";
@@ -15,19 +15,19 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "Login",
+    component: Login,
   },
   {
     path: "/register",
     name: "Register",
     component: Register,
   },
-  {
-    path: "/login",
-    name: "Login",
-    component: Login,
-  },
+  // {
+  //   path: "/login",
+  //   name: "Login",
+  //   component: Login,
+  // },
   {
     path: "/planeSearch",
     name: "PlaneSearch",

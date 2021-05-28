@@ -28,6 +28,9 @@
         <el-form-item label="酒店网址" prop="http">
           <el-input v-model="searchForm.http"> </el-input>
         </el-form-item>
+        <el-form-item label="评分" prop="ratings">
+          <el-input v-model="searchForm.ratings"> </el-input>
+        </el-form-item>
         <el-form-item>
           <el-button @click="searchPub" type="primary">查询</el-button>
           <el-button @click="resetTo">重置</el-button>
@@ -54,6 +57,11 @@
         </el-table-column>
         <el-table-column prop="http" label="网址" width="200">
         </el-table-column>
+        <el-table-column
+          prop="ratings"
+          label="评分"
+          width="180"
+        ></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <el-dropdown split-button type="info" size="small">
@@ -107,6 +115,9 @@
           <el-form-item label="网址" prop="http">
             <el-input v-model="changeForm.http"></el-input>
           </el-form-item>
+          <el-form-item label="评分" prop="ratings">
+            <el-input v-model="changeForm.ratings"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button @click="changeTo('changeForm')">修改</el-button>
           </el-form-item>
@@ -147,6 +158,9 @@
           <el-form-item label="网址" prop="http">
             <el-input v-model="addForm.http"></el-input>
           </el-form-item>
+          <el-form-item label="评分" prop="ratings">
+            <el-input v-model="addForm.ratings"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button @click="addTo('addForm')">确定</el-button>
           </el-form-item>
@@ -166,18 +180,21 @@ export default {
         city: [{ required: true, message: "请输入城市", trigger: "blur" }],
         pub: [{ required: true, message: "请输入酒店名称", trigger: "blur" }],
         http: [{ required: true, message: "请输入酒店网址", trigger: "blur" }],
+        ratings: [{ required: true, message: "请输入评分", trigger: "blur" }],
       },
       addForm: {
         id: "",
         city: "",
         pub: "",
         http: "",
+        ratings: "",
       },
       addrules: {
         id: [{ required: true, message: "请输入ID", trigger: "blur" }],
         city: [{ required: true, message: "请输入城市", trigger: "blur" }],
         pub: [{ required: true, message: "请输入酒店名称", trigger: "blur" }],
         http: [{ required: true, message: "请输入酒店网址", trigger: "blur" }],
+        ratings: [{ required: true, message: "请输入评分", trigger: "blur" }],
       },
       cityData: [],
       loading: false,
@@ -186,6 +203,7 @@ export default {
         city: "",
         pub: "",
         http: "",
+        ratings: "",
       },
       addDialogVisible: false,
     };
@@ -206,7 +224,8 @@ export default {
         this.searchForm.id == "" &&
         this.searchForm.city == "" &&
         this.searchForm.pub == "" &&
-        this.searchForm.http == ""
+        this.searchForm.http == "" &&
+        this.searchForm.ratings == ""
       ) {
         params = {};
       } else {
@@ -236,7 +255,7 @@ export default {
     // 显示酒店修改弹窗
     showPubChange(row) {
       this.changeDialogVisible = true;
-      this.changeForm = row;
+      this.changeForm = { ...row };
     },
     // 修改酒店
     changeTo(formName) {

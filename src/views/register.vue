@@ -129,7 +129,7 @@ export default {
             if (res.data.msg === 1) {
               this.$message.success("注册成功");
               this.$refs[name].resetFields();
-              this.$router.push("/login");
+              this.$router.push("/");
             } else {
               this.$message.error("注册失败，用户名可能重复");
             }
@@ -162,6 +162,7 @@ export default {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   opacity: 1;
   border-radius: 18px;
+  background: #fff;
 }
 ::v-deep .questionDiv .el-form-item__content {
   text-align: left;

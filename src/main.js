@@ -8,7 +8,9 @@ import VueRouter from "vue-router";
 import VueResource from "vue-resource";
 import axios from "axios";
 import "./common/common";
+import echarts from "echarts";
 
+Vue.prototype.$echarts = echarts;
 Vue.prototype.$api = "http://localhost:3000";
 Vue.config.productionTip = false;
 Vue.use(VueRouter);

@@ -1,6 +1,7 @@
 <template>
   <div id="main">
-    <div><router-link to="/planeSearch"> 返回</router-link></div>
+    <!-- <div><router-link to="/planeSearch"> 返回</router-link></div> -->
+    <div class="topBack"><span @click="goBack">返回</span></div>
     <div class="titleBox">
       <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
       <span>欢迎来到航班查询系统</span>
@@ -11,13 +12,15 @@
       <p>昵称:{{ infoData.uname }}</p>
       <p @click="dialogVisible = true">修改个人信息</p>
     </div>
-    <div id="tableDiv">
-      <div style="text-align: center"><span>关注航班</span></div>
+    <div class="careDiv">
+      <div class="titleStyle"><span>关注航班</span></div>
       <el-table
         :data="tableData"
         v-loading="tableLoading"
+        height="250"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
+        border
       >
         <el-table-column prop="cid" label="航班公司" width="100">
           <template slot-scope="scope">
@@ -84,66 +87,134 @@
             <el-button size="small" @click="deleteTo(scope.row)"
               >取消关注</el-button
             >
+            <el-button
+              size="small"
+              class="tableBtn"
+              @click="ticketTo(scope.row)"
+              >去订票</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
     <!-- 显示已经购买的机票 -->
     <div class="userTickets">
-      <div>购买机票</div>
+      <div class="titleStyle"><span> 购买机票 </span></div>
       <el-table
         :data="ticketData"
-        style="width: 100%"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
+        border
+        height="250"
       >
-        <el-table-column prop="uid" label="用户名" width="180">
+        <el-table-column prop="uid" label="用户名" width="80">
         </el-table-column>
-        <el-table-column prop="pname" label="航班名称" width="180">
+        <el-table-column prop="pname" label="航班名称" width="120">
         </el-table-column>
-        <el-table-column prop="bname" label="订票人" width="180">
+        <el-table-column prop="bname" label="订票人" width="80">
         </el-table-column>
         <el-table-column prop="bphone" label="订票人手机号" width="180">
         </el-table-column>
         <el-table-column prop="bIndextity" label="订票人身份证" width="180">
         </el-table-column>
-        <el-table-column prop="ticket" label="票价" width="180">
+        <el-table-column prop="ticket" label="票价" width="80">
         </el-table-column>
         <el-table-column prop="isUsual" label="是否经济舱" width="180">
           <template slot-scope="scope">
             {{ scope.row.isUsual == 1 ? "是" : "否" }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-button size="small" @click="ticketDelete(scope.row)"
               >取消订票</el-button
+            >
+            <el-button
+              class="tableBtn"
+              size="mini"
+              @click="stateShow(scope.row.pid)"
+              >查看航班动态信息</el-button
             >
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div></div>
-    <el-dialog
-      title="修改个人信息"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose"
-    >
-      <el-form
-        ref="personForm"
-        :model="personForm"
-        label-width="80px"
-        :rules="personRules"
+    <div>
+      <el-dialog
+        title="修改个人信息"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :before-close="handleClose"
       >
-        <el-form-item label="昵称" prop="uname">
-          <el-input v-model="personForm.uname"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="userChange('personForm')">修改</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+        <el-form
+          ref="personForm"
+          :model="personForm"
+          label-width="80px"
+          :rules="personRules"
+        >
+          <el-form-item label="昵称" prop="uname">
+            <el-input v-model="personForm.uname"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="userChange('personForm')">修改</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+      <el-dialog
+        title="航班信息"
+        :visible.sync="dialogVisible1"
+        :before-close="handleClose1"
+      >
+        <el-table
+          :data="planeStateData"
+          stripe
+          style="width: 100%"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+        >
+          <el-table-column prop="checkInCounter" label="值机柜台" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.checkInCounter ? scope.row.checkInCounter : "--" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="expectedFly" label="预计起飞时间" width="180">
+            <template slot-scope="scope">
+              {{
+                new Date(parseInt(scope.row.expectedFly)).getFullYear() +
+                "年" +
+                $getHours(parseInt(scope.row.expectedFly))[0] +
+                $getHours(parseInt(scope.row.expectedFly))[1]
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="expectedLand" label="预计降落时间" width="180">
+            <template slot-scope="scope">
+              {{
+                new Date(parseInt(scope.row.expectedLand)).getFullYear() +
+                "年" +
+                $getHours(parseInt(scope.row.expectedLand))[0] +
+                $getHours(parseInt(scope.row.expectedLand))[1]
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="signIn" label="登机口" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.signIn ? scope.row.signIn : "--" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="signOut" label="出口" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.signOut ? scope.row.signOut : "--" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="luggage" label="行李转盘" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.luggage ? scope.row.luggage : "--" }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
@@ -160,6 +231,7 @@ export default {
       tableLoading: false,
       companyData: [],
       dialogVisible: false,
+      dialogVisible1: false,
       personForm: {
         uname: window.sessionStorage.getItem("uname"),
       },
@@ -167,6 +239,7 @@ export default {
         uname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
       },
       ticketData: [],
+      planeStateData: [],
     };
   },
   async created() {
@@ -191,6 +264,24 @@ export default {
     console.log(this.tableData);
   },
   methods: {
+    ticketTo(row) {
+      this.$router.push({
+        path: "/buyTickets",
+        query: { ...row },
+      });
+    },
+    // 显示弹窗并发送连接
+    async stateShow(pid) {
+      this.dialogVisible1 = true;
+      let res = await this.$request({
+        type: "get",
+        url: "/home/searchState",
+        params: { pid },
+      });
+      if (res) {
+        this.planeStateData = res.data.length > 0 ? res.data : [];
+      }
+    },
     // 删除订票
     ticketDelete(row) {
       this.$confirm("此操作进行航班退票, 是否继续?", "提示", {
@@ -350,6 +441,12 @@ export default {
         this.userCareData = res.data;
       }
     },
+    goBack() {
+      history.go(-1);
+    },
+    handleClose1() {
+      this.dialogVisible1 = false;
+    },
   },
 };
 </script>
@@ -387,6 +484,31 @@ export default {
   cursor: pointer;
   color: #2577e3;
 }
-.userTickets {
+.userTickets,
+.careDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+}
+.topBack {
+  width: 100%;
+  padding: 10px 0 0 5%;
+}
+.topBack span {
+  cursor: pointer;
+  color: rgb(7, 45, 170);
+  align-self: flex-start;
+}
+.titleStyle {
+  width: 100%;
+  margin-top: 10px;
+  padding: 5px;
+  text-align: center;
+  background: #96b97d;
+}
+.tableBtn {
+  margin-top: 5px;
 }
 </style>

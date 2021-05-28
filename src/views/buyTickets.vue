@@ -3,10 +3,10 @@
     <div><UserShow></UserShow></div>
     <div class="titleBox">
       <span><img src="./../assets/planeIcon/titlePlane.png" alt="" /></span>
-      <span>欢迎来到航班查询系统</span>
+      <span>欢迎来到航班订票页面</span>
     </div>
     <!-- 航班信息展示 -->
-    <div>
+    <div class="contentDiv">
       <el-form :model="planeInfoData" :inline="true" class="inforData">
         <el-form-item
           label="航班公司:"
@@ -33,9 +33,9 @@
         <el-form-item label="到达机场:" label-width="120px">
           {{ planeInfoData.pEndArea }}
         </el-form-item>
-        <el-form-item label="到达机场:" label-width="120px">
+        <!-- <el-form-item label="到达机场:" label-width="120px">
           {{ planeInfoData.pEndArea }}
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="出发时间:" label-width="120px">
           {{
             new Date(parseInt(planeInfoData.pStartTime)).getFullYear() +
@@ -95,21 +95,19 @@
           }}</span>
         </el-form-item>
         <el-form-item label="乘坐人:" label-width="120px">
-          <el-button
-            @click="dialogVisible = true"
-            :disabled="userTableData.length > 0"
-            >添加（目前仅支持添加一人）</el-button
-          >
+          <el-button @click="dialogVisible = true">添加</el-button>
           <el-table
             v-if="userTableData.length > 0"
             :data="userTableData"
             style="width: 100%"
+            @selection-change="handleSelectionChange"
           >
-            <el-table-column prop="bname" label="姓名:" width="180">
+            <el-table-column type="selection" width="55"> </el-table-column>
+            <el-table-column prop="bname" label="姓名" width="80">
             </el-table-column>
-            <el-table-column prop="bphone" label="手机号:" width="180">
+            <el-table-column prop="bphone" label="手机号" width="150">
             </el-table-column>
-            <el-table-column prop="bIndextity" label="身份证:">
+            <el-table-column prop="bIndextity" label="身份证">
             </el-table-column>
           </el-table>
         </el-form-item>
@@ -173,6 +171,7 @@ export default {
         ],
       },
       userTableData: [],
+      buyUserData: [],
     };
   },
   async created() {
@@ -183,24 +182,38 @@ export default {
     this.getTicketPrice();
   },
   methods: {
+    // 复选框改变
+    handleSelectionChange(select) {
+      this.buyUserData = select;
+      console.log(select);
+    },
     //购票
     async ticketTo() {
+      let number =
+        this.ticketChoose === "1"
+          ? this.planeTicketPrice[0].usualNumber
+          : this.planeTicketPrice[0].noUsualNumber;
+      if (number == 0) {
+        return this.$message.error("机票已售空");
+      }
       if (this.ticketChoose === "")
         return this.$message.error("请选择机票类型");
-      if (this.userTableData.length === 0)
-        return this.$message.error("请输入乘坐人");
+      if (this.buyUserData.length === 0)
+        return this.$message.error("请输入或选择乘坐人");
       // 验证客户是否已经买票
-      let res = await this.$request({
-        type: "get",
-        url: "/ticket/getUserTickets",
-        params: {
-          uid: window.sessionStorage.getItem("uid"),
-          bname: this.userTableData[0].bname,
-        },
-      });
-      if (res) {
-        if (res.data.length > 0) {
-          return this.$message.error("已购买过该航班，请勿重复购买");
+      for (let i of this.buyUserData) {
+        let res = await this.$request({
+          type: "get",
+          url: "/ticket/getUserTickets",
+          params: {
+            pid: this.planeInfoData.pid,
+            bIndextity: i.bIndextity,
+          },
+        });
+        if (res) {
+          if (res.data.length > 0) {
+            return this.$message.error("已购买过该航班，请勿重复购买");
+          }
         }
       }
 
@@ -209,39 +222,42 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(async () => {
-        let res = await this.$request({
-          type: "post",
-          url: "/ticket/buyTickets",
-          params: {
-            uid: window.sessionStorage.getItem("uid"),
-            pid: this.planeInfoData.pid,
-            pname: this.planeInfoData.pname,
-            bname: this.userTableData[0].bname,
-            bphone: this.userTableData[0].bphone,
-            bIndextity: this.userTableData[0].bIndextity,
-            ticket:
-              this.ticketChoose == "1"
-                ? this.planeTicketPrice[0].usualPrice
-                : this.planeTicketPrice[0].noUsualPrice,
-            isUsual: this.ticketChoose,
-          },
-        });
-        if (res) {
-          let obj = {
-            pid: this.planeInfoData.pid,
-          };
-          this.ticketChoose == "1"
-            ? (obj.usualNumber = this.planeTicketPrice[0].usualNumber - 1)
-            : (obj.noUsualNumber = this.planeTicketPrice[0].noUsualNumber - 1);
-          await this.$request({
+        for (let i of this.buyUserData) {
+          let res = await this.$request({
             type: "post",
-            url: "/ticket/updataTickets",
+            url: "/ticket/buyTickets",
             params: {
-              ...obj,
+              uid: window.sessionStorage.getItem("uid"),
+              pid: this.planeInfoData.pid,
+              pname: this.planeInfoData.pname,
+              bname: i.bname,
+              bphone: i.bphone,
+              bIndextity: i.bIndextity,
+              ticket:
+                this.ticketChoose == "1"
+                  ? this.planeTicketPrice[0].usualPrice
+                  : this.planeTicketPrice[0].noUsualPrice,
+              isUsual: this.ticketChoose,
             },
           });
-          this.$message.success("购入成功");
-          this.$router.push("/personCenter");
+          if (res) {
+            let obj = {
+              pid: this.planeInfoData.pid,
+            };
+            this.ticketChoose == "1"
+              ? (obj.usualNumber = this.planeTicketPrice[0].usualNumber - 1)
+              : (obj.noUsualNumber =
+                  this.planeTicketPrice[0].noUsualNumber - 1);
+            await this.$request({
+              type: "post",
+              url: "/ticket/updataTickets",
+              params: {
+                ...obj,
+              },
+            });
+            this.$message.success("购入成功");
+            this.$router.push("/personCenter");
+          }
         }
       });
     },
@@ -319,12 +335,21 @@ export default {
   vertical-align: middle;
 }
 .inforData {
+  background: #fff;
   width: 600px;
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
   padding: 20px;
+  border-radius: 4px;
 }
 .lastBtn {
   width: 100%;
   text-align: center;
+}
+.contentDiv {
+  border-radius: 4px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

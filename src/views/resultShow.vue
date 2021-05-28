@@ -40,11 +40,27 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="航空公司" prop="cid">
+          <el-select
+            v-model="searchLeftForm.cid"
+            filterable
+            placeholder="请选择"
+            clearable
+          >
+            <el-option
+              v-for="(item, index) in companyData"
+              :key="index"
+              :label="item.cname"
+              :value="item.cid"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </div>
     <!-- 右侧酒店推荐div -->
     <div class="pubBox">
-      <RecommendPub :city="$route.query.pEndCity"></RecommendPub>
+      <RecommendPub :city="resForm.pEndCity"></RecommendPub>
     </div>
     <!-- 顶部搜索框开始 -->
     <div class="searchTop">
@@ -116,6 +132,7 @@
             type="date"
             placeholder="选择出发日期"
             :picker-options="pickerOptions"
+            :disabled="!resForm.isBack"
           >
           </el-date-picker>
         </el-form-item>
@@ -136,9 +153,9 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column prop="pname" sortable label="航班信息" width="180">
+        <el-table-column prop="pname" sortable label="航班信息" width="150">
           <template slot-scope="scope">
-            <div v-if="!scope.row.cid">
+            <div v-if="scope.row.cid">
               {{ companyData.find((item) => item.cid === scope.row.cid).cname }}
             </div>
             <div>{{ scope.row.pname }}</div>
@@ -148,7 +165,7 @@
           prop="pStartTime"
           label="出发时间"
           sortable
-          width="180"
+          width="150"
         >
           <template slot-scope="scope">
             <div>
@@ -160,7 +177,7 @@
             <div>{{ $getHours(scope.row.pStartTime)[2] }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="pEndTime" width="180" sortable label="到达时间">
+        <el-table-column prop="pEndTime" width="150" sortable label="到达时间">
           <template slot-scope="scope">
             <div>
               {{
@@ -242,6 +259,7 @@ export default {
       searchLeftForm: {
         pStartArea: "",
         pEndArea: "",
+        cid: "",
       },
       planeAreaObj: {
         start: [],
@@ -252,7 +270,7 @@ export default {
   },
   async created() {
     this.userName = sessionStorage.getItem("uname");
-    console.log(this.userName);
+    // console.log(this.userName);
     this.searchForm = this.$route.query;
     this.resForm = {
       pStartCity: this.$route.query.pStartCity,
@@ -263,7 +281,7 @@ export default {
         : parseInt(this.$route.query.pStartTime),
       isBack: this.$route.query.isBack === "false" ? false : true,
     };
-    console.log(this.$route.query, 123);
+    // console.log(this.$route.query, 123);
     let arr = [];
     arr.push(this.getCityPlane(this.$route.query.pStartCity, "start"));
     arr.push(this.getCityPlane(this.$route.query.pEndCity, "end"));
@@ -272,6 +290,11 @@ export default {
     arr.push(this.getCopany());
     arr.push(this.getUserCare());
     await Promise.all(arr);
+  },
+  wacth: {
+    // resForm(newval) {
+    //   this.resForm.pEndCity = newval.pEndCity;
+    // },
   },
   methods: {
     // 前往订票页
@@ -427,6 +450,7 @@ export default {
           pEndArea: this.searchLeftForm.pEndArea,
           pStartTime: this.$oneDayTime(this.resForm.pStartTime)[0],
           pEndTime: this.$oneDayTime(this.resForm.pEndTime)[1],
+          cid: this.searchLeftForm.cid,
         },
       });
       if (res) {
@@ -451,7 +475,7 @@ export default {
 }
 
 .searchTop {
-  border: 1px solid #1b8dda;
+  border: 1px solid #a6a8aa;
   line-height: 1;
   vertical-align: middle;
   padding: 15px;
@@ -490,22 +514,24 @@ export default {
   padding: 10px;
 }
 .searchLeftBox {
+  background: #fff;
   position: absolute;
   padding: 10px;
   width: 200px;
-  height: 250px;
-  border: 1px solid #1b8dda;
+  /* height: 300px; */
+  border: 1px solid #a6a8aa;
   border-radius: 5px;
   top: 30%;
   left: 10px;
   z-index: 35;
 }
 .pubBox {
+  background: #fff;
   position: absolute;
   padding: 10px;
   width: 200px;
-  height: 250px;
-  border: 1px solid #1b8dda;
+  /* height: 250px; */
+  border: 1px solid #a6a8aa;
   border-radius: 5px;
   top: 30%;
   right: 10px;

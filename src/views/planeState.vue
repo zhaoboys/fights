@@ -7,7 +7,7 @@
     <div><UserShow></UserShow></div>
     <div class="mainTitleBox">航班状态</div>
     <div class="timeBox">
-      时间:{{
+      航班时间:{{
         new Date(parseInt(searchForm.pStartTime)).getFullYear() +
         "." +
         (new Date(parseInt(searchForm.pStartTime)).getMonth() + 1) +
@@ -41,15 +41,77 @@
             <span>{{ $getHours(item.pEndTime)[1] }}</span>
             <span>{{ item.pEndArea }}</span>
           </div>
-          <div>
-            <el-button @click="changeCare($event, item)">{{
+          <div v-if="userName">
+            <el-button size="mini" @click="changeCare($event, item)">{{
               userCareData.find((item1) => item1.pid === item.pid) === undefined
                 ? "关注"
                 : "取消关注"
             }}</el-button>
           </div>
+          <div>
+            <el-button size="mini" @click="stateShow(item.pid)"
+              >查看航班动态信息</el-button
+            >
+          </div>
         </div>
       </div>
+    </div>
+    <!-- 弹框显示 -->
+    <div>
+      <el-dialog
+        title="航班信息"
+        :visible.sync="dialogVisible"
+        :before-close="handleClose"
+      >
+        <el-table
+          :data="planeStateData"
+          stripe
+          style="width: 100%"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+        >
+          <el-table-column prop="checkInCounter" label="值机柜台" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.checkInCounter ? scope.row.checkInCounter : "--" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="expectedFly" label="预计起飞时间" width="180">
+            <template slot-scope="scope">
+              {{
+                new Date(parseInt(scope.row.expectedFly)).getFullYear() +
+                "年" +
+                $getHours(parseInt(scope.row.expectedFly))[0] +
+                $getHours(parseInt(scope.row.expectedFly))[1]
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="expectedLand" label="预计降落时间" width="180">
+            <template slot-scope="scope">
+              {{
+                new Date(parseInt(scope.row.expectedLand)).getFullYear() +
+                "年" +
+                $getHours(parseInt(scope.row.expectedLand))[0] +
+                $getHours(parseInt(scope.row.expectedLand))[1]
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="signIn" label="登机口" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.signIn ? scope.row.signIn : "--" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="signOut" label="出口" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.signOut ? scope.row.signOut : "--" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="luggage" label="行李转盘" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.luggage ? scope.row.luggage : "--" }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -66,10 +128,14 @@ export default {
       userCareData: [],
       companyData: [],
       loading: false,
+      userName: "",
+      dialogVisible: false,
+      planeStateData: [],
     };
   },
   async created() {
     this.loading = true;
+    this.userName = sessionStorage.getItem("uname");
     this.searchForm = this.$route.query;
     let arr = [];
     arr.push(this.planeSearch());
@@ -79,6 +145,21 @@ export default {
     this.loading = false;
   },
   methods: {
+    // 显示弹窗并发送连接
+    async stateShow(pid) {
+      this.dialogVisible = true;
+      let res = await this.$request({
+        type: "get",
+        url: "/home/searchState",
+        params: { pid },
+      });
+      if (res) {
+        this.planeStateData = res.data.length > 0 ? res.data : [];
+      }
+    },
+    handleClose() {
+      this.dialogVisible = false;
+    },
     async changeCare(e, row) {
       this.loading = true;
       if (e.target.innerHTML === "<!----><!----><span>关注</span>") {
@@ -192,6 +273,8 @@ export default {
   margin: 10px;
   padding: 10px;
   border: 5px;
+  background: #fff;
+  border-radius: 8px;
 }
 .stateDiv:hover {
   box-shadow: 0px 0px 10px rgba(100, 100, 104, 0.075);

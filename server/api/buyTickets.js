@@ -172,7 +172,7 @@ router.post("/deletePub", (req, res) => {
 // 添加酒店星系
 router.post("/addPub", (req, res) => {
   let params = req.body;
-  let sql = `insert into fs_cityPub values('${params.city}','${params.pub}','${params.id}','${params.http}')`;
+  let sql = `insert into fs_cityPub values('${params.city}','${params.pub}','${params.id}','${params.http}','${params.ratings}')`;
   console.log(sql);
   conn.query(sql, function (err, result) {
     if (err) {

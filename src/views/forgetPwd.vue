@@ -46,7 +46,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item class="btnDiv">
-          <router-link to="/login"><el-button>返回</el-button> </router-link>
+          <router-link to="/"><el-button>返回</el-button> </router-link>
           <el-button @click="pwdChange('pwdForm')">确定</el-button>
         </el-form-item>
       </el-form>
@@ -125,7 +125,7 @@ export default {
             if (res.data.affectedRows > 0) {
               this.$message.success("修改成功");
               setTimeout(() => {
-                this.$router.push("/login");
+                this.$router.push("/");
               }, 1000);
             } else {
               this.$message.error("修改失败");
@@ -146,6 +146,8 @@ export default {
   margin: auto;
   box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
   padding: 20px;
+  background: #fff;
+  border-radius: 8px;
 }
 .questionDiv ::v-deep .el-form-item__content {
   text-align: left;
